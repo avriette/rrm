@@ -1,0 +1,37 @@
+{
+  "name": "rrm",
+  "version": "0.0.1",
+  "description": "A non-relational ORM that sits atop Riak"
+  "main": "lib/rrm.js",
+  "directories": {
+    "test": "test",
+    "bin": "bin"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avriette/rrm.git"
+  },
+  "keywords": [
+    "riak",
+    "synchronous",
+    "simple",
+    "promises",
+    "q"
+  ],
+  "author": "Jane Avriette <jane@cpan.org> (http://github.com/avriette)",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/avriette/rrm/issues"
+  },
+  "dependencies": {
+    "riak-dc" : "*",
+    "mocha": "*",
+    "nock": "*",
+    "chai": "*",
+    "chai-as-promised": "*"
+  },
+  "homepage": "https://github.com/avriette/rrm"
+}
