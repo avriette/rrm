@@ -30,6 +30,7 @@
     "riak-dc" : "*",
     "mocha": "*",
     "nock": "*",
+    "jagrep": "*",
     "chai": "*",
     "chai-as-promised": "*"
   },
