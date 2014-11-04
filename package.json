@@ -1,11 +1,10 @@
 {
   "name": "rrm",
   "version": "0.0.1",
-  "description": "A non-relational ORM that sits atop Riak"
+  "description": "A non-relational \"ORM\" that sits atop Riak.",
   "main": "lib/rrm.js",
   "directories": {
-    "test": "test",
-    "bin": "bin"
+    "test": "test"
   },
   "scripts": {
     "test": "mocha"
@@ -19,7 +18,12 @@
     "synchronous",
     "simple",
     "promises",
-    "q"
+    "q",
+    "orm",
+    "object",
+    "relational",
+    "model",
+    "sendak"
   ],
   "author": "Jane Avriette <jane@cpan.org> (http://github.com/avriette)",
   "license": "CC0-1.0",
