@@ -50,12 +50,90 @@ using RRM.
 
 #### Exported functions:
 
-* `add_object( )`
-* `del_object( )`
-* `get_objects( )`
+Unless otherwise specified, all references to returned values are actually
+promises (using `q`, rather than the value itself). So "returns a hash" means
+"returns a promise to a hash."
+
+* `add_object( type )`
+
+Takes two arguments, the type of object being added and the actual object to
+be added. Note that if this object is already in Riak, an exception will be
+thrown. For existing objects, use `update_object`.
+
+* `del_object( type, object )`
+
+Takes two arguments, the type of object to be deleted from Riak and the object
+itself. This object must have a serial, or an exception will be thrown.
+
+* `get_objects( type )`
+
+Takes one argument, the type of objects requested. This returns *all* the
+objects of that type in Riak. This is actually a very fast operation in Riak
+at most practical scales.
+
 * `get_schema( )`
-* `new_object( )`
+
+Returns a hash of what the objects look like in Riak. This includes metadata
+and should not be used to "create new objects" (see `new_object`). Takes no
+arguments.
+
+* `new_object( type )`
+
+Takes object type as sole argument, and returns a new object with relevant
+attributes from the schema. This will not be stored until `add_object` is
+called.
+
 * `object_types( )`
-* `update_object( )`
+
+Takes no arguments and returns a list of object types defined in the schema.
+
+* `update_object( type, object )`
+
+Provided a type and object, RRM will attempt to find the object in Riak,
+*delete* that object, and re-insert, providing you with a new copy of your
+object with appropriate serial. Note that delete objects are
+[tricky](http://docs.basho.com/riak/latest/ops/advanced/deletion/#Tombstones)
+in Riak, so be sparing about the this operation (delete & insert).
+
+#### The basic design pattern
+
+```
+var rrm     = require( 'rrm' )
+	, types   = rrm.object_types()
+	, schema  = rrm.get_schema()
+	, banana  = rrm.new_object( 'fruit' );
+
+banana['color'] = 'green';
+
+var pbanana = rrm.add_object( banana ).then( function (b) {
+	// 'pbanana' infers 'promise to a banana'
+	//
+	// the banana object now has a serial and can be referenced in Riak.
+	banana = b;
+
+	// Time elapses...
+
+	banana['color'] = 'yellow';
+
+	var promise = rrm.update_object( 'fruit', banana );
+
+	promise.then( function (b) {
+		// What will you do with your now-yellow banana?
+		//
+		banana = b;
+
+		// Time elapses...
+
+		// This will not return anything meaningful, although an exception will be
+		// triggered if the serial for this banana is not found.
+		//
+		rrm.del_object( 'fruit', banana );
+	} );
+
+} );
+```
+
+Author
+====
 
 [@avriette](https://github.com/avriette), jane@cpan.org
