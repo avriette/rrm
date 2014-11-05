@@ -55,7 +55,7 @@ if (parsed['get-schema']) {
 	rrm.get_schema().then( console.log );
 }
 else if (parsed['object-types']) {
-	// Display the schema for the user. This is kind of messy.
+	// Display the object types for the user.
 	//
 	rrm.object_types().then( console.log );
 }
