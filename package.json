@@ -36,6 +36,8 @@
     "nock": "*",
     "jagrep": "*",
     "chai": "*",
+    "q"   : "*",
+    "sinon"   : "*",
     "chai-as-promised": "*"
   },
   "homepage": "https://github.com/avriette/rrm"
