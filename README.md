@@ -48,6 +48,27 @@ assumes that you are using `http://localhost:8098/riak`, and if you are, RRM
 requires no configuration. If not, be sure to initialise `riak-dc` before
 using RRM.
 
+#### Key concepts:
+
+RRM stores a 'schema' in Riak, from which it derives prototypes of each of the
+object types stored in the RRM. The schema is not actually "bound" to
+anything, as such, and serves only as a template from which to build new
+objects.
+
+These objects are stored in a Riak bucket according to their prototype (so all
+the 'automobile' objects are stored in `riak/automobile/{serial}`.
+
+Objects are "anonymous" until they are stored in Riak, which gives them a
+unique serial (for SQL people, you might call this a 'primary key').
+
+Objects also contain no metadata about what they are. So you must keep track
+of which type of object you have. RRM is flexible enough that if you wanted to
+incorporate a `typeof` attribute, you could do this, but you would have to
+keep track of that yourself.
+
+There is no strict checking for whether an object you are storing actually
+conforms to the schema.
+
 #### Exported functions:
 
 Unless otherwise specified, all references to returned values are actually
@@ -56,9 +77,9 @@ promises (using `q`, rather than the value itself). So "returns a hash" means
 
 * `add_object( type )`
 
-Takes two arguments, the type of object being added and the actual object to
-be added. Note that if this object is already in Riak, an exception will be
-thrown. For existing objects, use `update_object`.
+Takes two arguments, the type of object being added and an anonymous  object to
+be added. Note that if this object is already in Riak, an Error will be
+returned. For existing objects, use `update_object`.
 
 * `del_object( type, object )`
 
@@ -70,6 +91,11 @@ itself. This object must have a serial, or an exception will be thrown.
 Takes one argument, the type of objects requested. This returns *all* the
 objects of that type in Riak. This is actually a very fast operation in Riak
 at most practical scales.
+
+Because Riak allows the storage of zero-byte tuples, it is possible to store
+an object in Riak which is defined but null. In the event this happens, you
+will receive an Error instead of the object (rather than not returning or
+returning the empty list or similar).
 
 * `get_schema( )`
 
@@ -91,7 +117,7 @@ Takes no arguments and returns a list of object types defined in the schema.
 
 Provided a type and object, RRM will attempt to find the object in Riak,
 *delete* that object, and re-insert, providing you with a new copy of your
-object with appropriate serial. Note that delete objects are
+object with appropriate serial. Note that deleted objects are
 [tricky](http://docs.basho.com/riak/latest/ops/advanced/deletion/#Tombstones)
 in Riak, so be sparing about the this operation (delete & insert).
 
@@ -124,14 +150,33 @@ var pbanana = rrm.add_object( banana ).then( function (b) {
 
 		// Time elapses...
 
-		// This will not return anything meaningful, although an exception will be
-		// triggered if the serial for this banana is not found.
+		// This will not return anything meaningful, although an error will be
+		// returned if the serial for this banana is not found.
 		//
-		rrm.del_object( 'fruit', banana );
+		rrm.del_object( 'fruit', banana ).then( function (e) {
+			if (typeof e == 'error') {
+				console.log( e )
+			}
+		} );
 	} );
 
 } );
 ```
+
+Future plans
+====
+
+If you look over the schema in `examples/`, you will notice I have left a
+couple fields reserved, and have stubs for relational properties. At some
+point RRM may actually be relational, but it serves my purpose for now.
+Additionally, Riak supports Javascript, so it should be possible to add
+constraints to columns (that is, attributes of objects) such as "only allow
+this to be a url" and similar.
+
+Don't mess with those fields.
+
+I'm not going to break compatibility for a long time, though. So, in the event
+those things are added, it should be transparent.
 
 Author
 ====
