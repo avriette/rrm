@@ -1,55 +1,100 @@
-var rrm    = require( 'rrm' )
-	, Riak   = require( 'riak-dc' )
-	, chai   = require( 'chai' )
-	, cap    = require( 'chai-as-promised' )
-	, assert = require( 'assert' )
-	, sinon  = require( 'sinon' );
+var rrm       = require( '../lib/rrm' )
+	, mock_riak = { }
+	, jgrep     = require( 'jagrep' )
+	, q         = require( 'q' )
+	, chai      = require( 'chai' )
+	, cap       = require( 'chai-as-promised' )
+	, assert    = require( 'assert' )
+	, sinon     = require( 'sinon' );
 
 chai.use( cap );
 
-var schema = {
+var Schema = {
 	"Automobile": {
 		"name"    : { "isa": "string", "defined": true, "distinct": true },
 		"hasone"  : [ "manufacturer" ],
-		"hasmany" : [ "repair", "part" ]
+		"hasmany" : [ "repair", "part" ],
+		"data"    : [ ] // NOTE THIS IS FOR MOCKING
 	},
 	"Manufacturer": {
 		"name"    : { "isa": "string", "defined": true, "distinct": true, "verified": "RESERVED" },
-		"hasmany" : [ "automobile", "model" ]
+		"hasmany" : [ "automobile", "model" ],
+		"data"    : [ ] // NOTE THIS IS FOR MOCKING
 	}
 };
 
-it( 'test schema syntax is valid', function () { assert( schema ) } )
-/*
+// Mock riak-dc {{{
 
-// Get the schema
-// Verify it's an object and not a string
-//
-{
-	setUp: function () {
-		sinon.spy(rrm, 'get_schema');
-	},
+function get_buckets () { // {{{
+	// get_buckets returns a (promise of a) list of all the buckets riak knows about.
+	//
 
-	rrm.get_schema().then( console.log );
-}
+	// We will store the response here later.
+	//
+	var deferred = q.defer()
+		, buckets  = Schema['buckets'];
 
-// Get object types
-//
-rrm.object_types().then( console.log );
+	deferred.resolve( buckets );
 
-// Describe what we know about an object's prototype
-//
-rrm.new_object( object_type ).then( console.log );
+	return deferred.promise;
 
-// this should be a serial from Riak.
-//
-rrm.add_object( object_type, tuple ); // .then( console.log );
+} // }}} get_buckets
 
-// Return all objects of a supplied type
-//
-rrm.get_objects( object_type ).then( console.log );
+function get_keys (bucket) { // {{{
+	var deferred = q.defer()
+		, keys     = Schema[bucket]['data'].forEach( function (object) { return object['serial'] } );
 
+	deferred.resolve( keys );
 
-describe( "test", function () { return it( "1 is true", function () { return 1 } ) } );
+	return deferred.promise;
 
-*/
+} // }}} get_keys
+
+function get_tuple (bucket, key) { // {{{
+	var deferred = q.defer()
+		, tuple    = jgrep.sync( {
+			'function' : function (t) {
+				if (t['serial'] == key) return 1;
+			}
+		}, Schema[bucket] );
+
+	deferred.resolve( tuple );
+
+	return deferred.promise;
+} // }}} get_tuple
+
+function del_tuple (bucket, key) { // {{{
+	var deferred = q.defer();
+
+	Schema = jgrep.sync( { 'function' : function (t) { if (t['serial'] != key) { return 1 } } }, Schema[bucket] )
+
+	return deferred.promise;
+} // }}} del_tuple
+
+function put_tuple (bucket, payload, forced_key) { // {{{
+	var deferred = q.defer()
+		, serial   = gen_serial();
+
+	payload['serial'] = serial;
+
+	Schema[bucket]['data'].push( payload );
+
+	deferred.resolve( serial );
+
+	return deferred.promise;
+
+} // }}} put_tuple
+
+function gen_serial () { // {{{
+	return crypto.randomBytes( Math.ceil(32) ).toString('hex');
+} // }}}
+
+mock_riak.get_keys    = get_keys;
+mock_riak.get_tuple   = get_tuple;
+mock_riak.get_buckets = get_buckets;
+mock_riak.put_tuple   = put_tuple;
+mock_riak.del_tuple   = del_tuple;
+
+// }}}
+
+it( 'test schema syntax is valid', function () { assert( Schema ) } )
