@@ -1,10 +1,39 @@
-var rrm  = require( 'rrm' );
+var rrm    = require( 'rrm' )
+	, Riak   = require( 'riak-dc' )
+	, chai   = require( 'chai' )
+	, cap    = require( 'chai-as-promised' )
+	, assert = require( 'assert' )
+	, sinon  = require( 'sinon' );
 
-// Display the schema for the user. This is kind of messy.
+chai.use( cap );
+
+var schema = {
+	"Automobile": {
+		"name"    : { "isa": "string", "defined": true, "distinct": true },
+		"hasone"  : [ "manufacturer" ],
+		"hasmany" : [ "repair", "part" ]
+	},
+	"Manufacturer": {
+		"name"    : { "isa": "string", "defined": true, "distinct": true, "verified": "RESERVED" },
+		"hasmany" : [ "automobile", "model" ]
+	}
+};
+
+it( 'test schema syntax is valid', function () { assert( schema ) } )
+/*
+
+// Get the schema
+// Verify it's an object and not a string
 //
-rrm.get_schema().then( console.log );
+{
+	setUp: function () {
+		sinon.spy(rrm, 'get_schema');
+	},
 
-// Display the schema for the user. This is kind of messy.
+	rrm.get_schema().then( console.log );
+}
+
+// Get object types
 //
 rrm.object_types().then( console.log );
 
@@ -22,3 +51,5 @@ rrm.get_objects( object_type ).then( console.log );
 
 
 describe( "test", function () { return it( "1 is true", function () { return 1 } ) } );
+
+*/
