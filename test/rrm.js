@@ -2,6 +2,7 @@ var rrm        = require( '../lib/rrm' )
 	, mock_riak  = { }
 	, mock_store = { }
 	, jgrep      = require( 'jagrep' )
+	, crypto     = require( 'crypto' )
 	, q          = require( 'q' )
 	, chai       = require( 'chai' )
 	, cap        = require( 'chai-as-promised' )
@@ -39,14 +40,17 @@ function get_buckets () { // {{{
 } // }}} get_buckets
 
 function get_keys (bucket) { // {{{
-	var deferred = q.defer();
+	var deferred = q.defer()
+		, keys     = [ ];
 	
 	if (bucket == 'prototypes') {
 		deferred.resolve( Object.keys( Schema ) );
 		return deferred.promise;
 	}
 
-	var keys = mock_store[bucket]['data'].forEach( function (object) { return object['serial'] } );
+	var keys = mock_store[bucket].forEach( function (object) { 
+		keys.push( object['serial'] );
+	} );
 
 	deferred.resolve( keys );
 
@@ -55,12 +59,13 @@ function get_keys (bucket) { // {{{
 } // }}} get_keys
 
 function get_tuple (bucket, key) { // {{{
+	console.log( bucket + '/' + key );
 	var deferred = q.defer()
 		, tuple    = jgrep.sync( {
 			'function' : function (t) {
 				if (t['serial'] == key) return 1;
 			}
-		}, Schema[bucket] );
+		}, mock_store[bucket] );
 
 	deferred.resolve( tuple );
 
@@ -85,7 +90,7 @@ function put_tuple (bucket, payload, forced_key) { // {{{
 		mock_store[bucket] = [ ];
 	}
 
-	mock_store[bucket]['data'].push( payload );
+	mock_store[bucket].push( payload );
 
 	deferred.resolve( serial );
 
@@ -105,9 +110,12 @@ mock_riak.del_tuple   = del_tuple;
 
 // }}}
 
-it( 'test schema syntax is valid', function () { assert( Schema ) } );
+it( 'test schema passes syntax/interpeter check', function () { assert( Schema ) } );
 
-it( 'rrm accepts a mock riak handle', function () {
+// set_riak_handle( handle ) {{{
+//
+
+it( 'rrm set_riak_handle', function () {
 	assert.deepEqual(
 		rrm.set_riak_handle( mock_riak ),
 		mock_riak,
@@ -115,7 +123,12 @@ it( 'rrm accepts a mock riak handle', function () {
 	)
 } );
 
-it( 'rrm accepts a mock schema', function () {
+// }}}
+
+// set_schema( schema ) {{{
+//
+
+it( 'rrm set_schema', function () {
 	assert.deepEqual(
 		rrm.set_schema( Schema ),
 		Schema,
@@ -123,7 +136,9 @@ it( 'rrm accepts a mock schema', function () {
 	)
 } );
 
-// object_types( )
+// }}}
+
+// object_types( ) {{{
 //
 
 it( 'rrm object_types', function () {
@@ -133,25 +148,70 @@ it( 'rrm object_types', function () {
 	} );
 } );
 
-// new_object( type )
+// }}}
+
+// new_object( type ) {{{
 //
 
 it( 'rmm new_object', function () {
-	assert( rrm.new_object( 'Automobile' ), 'object returned' )
+	assert( rrm.new_object( 'Automobile' ), 'object returned' );
+	assert.deepEqual( rrm.new_object( 'Automobile' ), { 'name': '' }, 'correctly-formed object' );
+	assert( rrm.new_object( 'Manufacturer' ), 'object returned' );
+	assert.deepEqual( rrm.new_object( 'Manufacturer' ), { 'name': '' }, 'correctly-formed object' );
 } );
 
-// get_schema( )
+// }}}
+
+// get_schema( ) {{{
 //
 
-// get_objects( type )
+it( 'rrm get_schema', function () {
+	return rrm.get_schema().then( function (s) {
+		assert( s, 'schema returned' );
+		assert.deepEqual( s, Schema, 'schema is correct' );
+	} );
+} );
+
+// }}}
+
+// add_object( type, object ) {{{
 //
+it( 'rrm add_object', function () {
+	var auto = rrm.new_object( 'Automobile' );
+	auto['name'] = 'Ford Edsel';
+	return rrm.add_object( 'Automobile', auto ).then( function (serial) {
+		// We can't really inspect this further.
+		//
+		assert( serial, 'serial returned' );
+	} );
+} );
+
+// }}}
+
+// get_objects( type ) {{{
+//
+
+it( 'rrm get_objects', function () {
+	var auto = rrm.new_object( 'Automobile' );
+	auto['name'] = 'Pontiac Aztek';
+	rrm.add_object( 'Automobile', auto ).then( function (serial) {
+		return rrm.object_types().then( function (types) { types.forEach( function (type) {
+			return rrm.get_objects( type ).then( function (objects) {
+				objects.forEach( function (object) {
+					assert( object, 'object defined' );
+				} )
+			} )
+		} ) } )
+	} )
+} );
+
+// }}}
 
 // del_object( type, object )
 //
 
-// add_object( type, object )
-//
-
 // update_object( type, object )
+//
+// TODO
 //
 
