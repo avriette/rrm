@@ -207,11 +207,21 @@ it( 'rrm get_objects', function () {
 
 // }}}
 
-// del_object( type, object )
+// del_object( type, object ) {{{
 //
+it( 'rrm del_object', function () {
+	var auto = rrm.new_object( 'Automobile' );
+	auto['name'] = 'Toyota Previa';
+	rrm.add_object( 'Automobile', auto ).then( function (serial) {
+		return rrm.del_object( 'Automobile', serial ).then( function () {
+			assert( 0, 'return from del_object is not good.' );
+		} )
+	} )
+} );
+
+// }}}
 
 // update_object( type, object )
 //
 // TODO
 //
-
