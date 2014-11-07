@@ -10,17 +10,18 @@ var rrm       = require( '../lib/rrm' )
 chai.use( cap );
 
 var Schema = {
-	"Automobile": {
-		"name"    : { "isa": "string", "defined": true, "distinct": true },
-		"hasone"  : [ "manufacturer" ],
-		"hasmany" : [ "repair", "part" ],
-		"data"    : [ ] // NOTE THIS IS FOR MOCKING
+	'Automobile': {
+		'name'    : { 'isa': 'string', 'defined': true, 'distinct': true },
+		'hasone'  : [ 'manufacturer' ],
+		'hasmany' : [ 'repair', 'part' ],
+		'data'    : [ ] // NOTE THIS IS FOR MOCKING
 	},
-	"Manufacturer": {
-		"name"    : { "isa": "string", "defined": true, "distinct": true, "verified": "RESERVED" },
-		"hasmany" : [ "automobile", "model" ],
-		"data"    : [ ] // NOTE THIS IS FOR MOCKING
-	}
+	'Manufacturer': {
+		'name'    : { 'isa': 'string', 'defined': true, 'distinct': true, 'verified': 'RESERVED' },
+		'hasmany' : [ 'automobile', 'model' ],
+		'data'    : [ ] // NOTE THIS IS FOR MOCKING
+	},
+	'defined' : 1
 };
 
 // Mock riak-dc {{{
@@ -29,10 +30,8 @@ function get_buckets () { // {{{
 	// get_buckets returns a (promise of a) list of all the buckets riak knows about.
 	//
 
-	// We will store the response here later.
-	//
 	var deferred = q.defer()
-		, buckets  = Schema['buckets'];
+		, buckets  = Object.keys(Schema);
 
 	deferred.resolve( buckets );
 
@@ -41,8 +40,14 @@ function get_buckets () { // {{{
 } // }}} get_buckets
 
 function get_keys (bucket) { // {{{
-	var deferred = q.defer()
-		, keys     = Schema[bucket]['data'].forEach( function (object) { return object['serial'] } );
+	var deferred = q.defer();
+	
+	if (bucket == 'prototypes') {
+		deferred.resolve( Object.keys( Schema ) );
+		return deferred.promise;
+	}
+
+	var keys = Schema[bucket]['data'].forEach( function (object) { return object['serial'] } );
 
 	deferred.resolve( keys );
 
@@ -97,4 +102,45 @@ mock_riak.del_tuple   = del_tuple;
 
 // }}}
 
-it( 'test schema syntax is valid', function () { assert( Schema ) } )
+it( 'test schema syntax is valid', function () { assert( Schema ) } );
+
+it( 'rrm accepts a mock riak handle', function () {
+	assert.deepEqual(
+		rrm.set_riak_handle( mock_riak ),
+		mock_riak,
+		'mock object returned'
+	)
+} );
+
+// object_types( )
+//
+
+it( 'rrm object_types', function () {
+	return rrm.object_types().then( function (types) {
+		types.forEach( function (t) { assert( typeof t == 'string', 'list of strings returned' ) } );
+		assert.deepEqual( types, [ 'Automobile', 'Manufacturer' ], 'list of types correct' );
+	} );
+} );
+
+// new_object( type )
+//
+
+it( 'rmm new_object', function () {
+	assert( rrm.new_object( 'Automobile' ), 'object returned' )
+} );
+
+// get_schema( )
+//
+
+// get_objects( type )
+//
+
+// del_object( type, object )
+//
+
+// add_object( type, object )
+//
+
+// update_object( type, object )
+//
+
