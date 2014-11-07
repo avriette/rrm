@@ -1,25 +1,24 @@
-var rrm       = require( '../lib/rrm' )
-	, mock_riak = { }
-	, jgrep     = require( 'jagrep' )
-	, q         = require( 'q' )
-	, chai      = require( 'chai' )
-	, cap       = require( 'chai-as-promised' )
-	, assert    = require( 'assert' )
-	, sinon     = require( 'sinon' );
+var rrm        = require( '../lib/rrm' )
+	, mock_riak  = { }
+	, mock_store = { }
+	, jgrep      = require( 'jagrep' )
+	, q          = require( 'q' )
+	, chai       = require( 'chai' )
+	, cap        = require( 'chai-as-promised' )
+	, assert     = require( 'assert' )
+	, sinon      = require( 'sinon' );
 
 chai.use( cap );
 
 var Schema = {
 	'Automobile': {
 		'name'    : { 'isa': 'string', 'defined': true, 'distinct': true },
-		'hasone'  : [ 'manufacturer' ],
-		'hasmany' : [ 'repair', 'part' ],
-		'data'    : [ ] // NOTE THIS IS FOR MOCKING
+		'hasone'  : [ 'Manufacturer' ],
+		'hasmany' : [ 'repair', 'part' ]
 	},
 	'Manufacturer': {
 		'name'    : { 'isa': 'string', 'defined': true, 'distinct': true, 'verified': 'RESERVED' },
-		'hasmany' : [ 'automobile', 'model' ],
-		'data'    : [ ] // NOTE THIS IS FOR MOCKING
+		'hasmany' : [ 'Automobile', 'Model' ]
 	},
 	'defined' : 1
 };
@@ -47,7 +46,7 @@ function get_keys (bucket) { // {{{
 		return deferred.promise;
 	}
 
-	var keys = Schema[bucket]['data'].forEach( function (object) { return object['serial'] } );
+	var keys = mock_store[bucket]['data'].forEach( function (object) { return object['serial'] } );
 
 	deferred.resolve( keys );
 
@@ -82,7 +81,11 @@ function put_tuple (bucket, payload, forced_key) { // {{{
 
 	payload['serial'] = serial;
 
-	Schema[bucket]['data'].push( payload );
+	if (!mock_store[bucket]) {
+		mock_store[bucket] = [ ];
+	}
+
+	mock_store[bucket]['data'].push( payload );
 
 	deferred.resolve( serial );
 
@@ -109,6 +112,14 @@ it( 'rrm accepts a mock riak handle', function () {
 		rrm.set_riak_handle( mock_riak ),
 		mock_riak,
 		'mock object returned'
+	)
+} );
+
+it( 'rrm accepts a mock schema', function () {
+	assert.deepEqual(
+		rrm.set_schema( Schema ),
+		Schema,
+		'mock schema returned'
 	)
 } );
 
