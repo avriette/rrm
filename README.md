@@ -75,9 +75,9 @@ Unless otherwise specified, all references to returned values are actually
 promises (using `q`, rather than the value itself). So "returns a hash" means
 "returns a promise to a hash."
 
-* `add_object( type )`
+* `add_object( type, object )`
 
-Takes two arguments, the type of object being added and an anonymous  object to
+Takes two arguments, the type of object being added and an anonymous object to
 be added. Note that if this object is already in Riak, an Error will be
 returned. For existing objects, use `update_object`.
 
