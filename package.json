@@ -38,7 +38,9 @@
     "chai": "*",
     "q"   : "*",
     "sinon"   : "*",
-    "chai-as-promised": "*"
+    "chai-as-promised": "*",
+    "nopt" : "*",
+    "sendak-usage": ">=0.0.6"
   },
   "homepage": "https://github.com/avriette/rrm"
 }
