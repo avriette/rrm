@@ -21,27 +21,31 @@ if (nopt['help']) {
 var rrm      = require( 'rrm' )
 	, q        = require( 'q' )
 	, deferred = q.defer()
-	, otypes   = [ ]
 	, objects  = { }
+	, moment   = require( 'moment' )
+	, label    = nopt['label'] ? nopt['label'] : moment().format()
 
+function pull_data () {
+return rrm.object_types().then( function (types) {
+	return q.all( types.map( function (type) {
+			var roster = [ ]
+				, proster = deferred.promise;
 
-deferred.resolve( objects )
+			deferred.resolve( roster );
 
-function pull_schema () {
-	return q.all( function () {
-		rrm.object_types().then( function (types) {
-			types.forEach( function (type) {
-				objects[type] = [];
-				rrm.get_objects( type ).then( function (object) {
-					objects[type].push( object )
-				} )
+			rrm.get_objects( type ).then( function (object) {
+				roster.push( object )
 			} )
-		} );
-		return deferred.promise;
-	} );
+			objects[type] = proster;
+	} ) )
+	.then( function () {
+		return objects;
+	} )
+} )
 }
 
-if (nopt['stdout']) {
-	// Write to stdout
-	//
-}
+pull_data().then( function (schema) {
+	Object.keys( schema ).forEach( function (otype) {
+		schema[otype].then( function (thing) { console.log( thing ) } );
+	} );
+} );
