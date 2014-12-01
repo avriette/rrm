@@ -40,7 +40,8 @@
     "sinon"   : "*",
     "chai-as-promised": "*",
     "nopt" : "*",
-    "sendak-usage": ">=0.0.6"
+    "sendak-usage": ">=0.0.6",
+    "moment": ">=2.0.0"
   },
   "homepage": "https://github.com/avriette/rrm"
 }
