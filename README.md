@@ -163,6 +163,26 @@ var pbanana = rrm.add_object( banana ).then( function (b) {
 } );
 ```
 
+What's in the box
+====
+
+There are two tools in the `bin` directory, `rrm.js` and `backupdb.js`.
+
+* `rrm.js` is a simple command-line tool to interface with the rrm. For
+example, `--get-schema` will return the schema as it appears in Riak, and you
+can use `--add-object --bucket bucketname --tuple base_64_encoded_object` to
+add elements to the database. And so on.
+
+* `backupdb.js` because Riak is not a relational database, we don't have
+anything analogous to
+[`pg_dumpall`](http://www.postgresql.org/docs/9.3/static/app-pg-dumpall.html),
+and no real formal language in which to dump the database. But it is still
+important to have backups in a modern, production environment. So
+`backupdb.js` is a sort of minimum-effort "store all the things in the
+database on the disk somewhere." It can print to stdout for unixy pipey kinds
+of things, take a filename, or an s3 bucket (you will need credentials for
+this, obviously).
+
 Future plans
 ====
 
