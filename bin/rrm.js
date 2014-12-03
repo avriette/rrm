@@ -3,11 +3,11 @@
 var parsed = require( 'sendak-usage' ).parsedown( {
 	'get-schema' : {
 		'type'        : [ Boolean ],
-		'description' : 'Return the full (Sendak-specific) schema in Riak',
+		'description' : 'Return the full RRM schema in Riak',
 	},
 	'object-types' : {
 		'type'        : [ Boolean ],
-		'description' : 'List the Sendak object types',
+		'description' : 'List available object types',
 	},
 	'describe-object' : {
 		'type'        : [ String ],
