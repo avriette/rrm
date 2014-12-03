@@ -1,6 +1,6 @@
 {
   "name": "rrm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A non-relational \"ORM\" that sits atop Riak.",
   "main": "lib/rrm.js",
   "directories": {
