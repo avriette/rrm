@@ -50,6 +50,11 @@ if (nopt['help']) {
 
 var rrm  = require( 'rrm' );
 
+rrm.ping().then( function (r) { if (!r) {
+	console.log( 'Connection seems to be down.' );
+	process.exit( -255 );
+} } );
+
 if (nopt['get-schema']) {
 	// Display the schema for the user. This is kind of messy.
 	//
