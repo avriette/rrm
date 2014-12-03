@@ -20,32 +20,15 @@ if (nopt['help']) {
 
 var rrm      = require( 'rrm' )
 	, q        = require( 'q' )
+	, fs       = require( 'fs' )
 	, deferred = q.defer()
 	, objects  = { }
 	, moment   = require( 'moment' )
 	, label    = nopt['label'] ? nopt['label'] : moment().format()
 
-function pull_data () {
-return rrm.object_types().then( function (types) {
-	return q.all( types.map( function (type) {
-			var roster = [ ]
-				, proster = deferred.promise;
-
-			deferred.resolve( roster );
-
-			rrm.get_objects( type ).then( function (object) {
-				roster.push( object )
-			} )
-			objects[type] = proster;
-	} ) )
-	.then( function () {
-		return objects;
+rrm.object_types().then( function (types) { types.forEach( function (type) {
+	console.log( 'Encountered object type: ' + type );
+	rrm.get_objects( type ).then( function (object) {
+		fs.appendFileSync( 'rrm-' + type + '-' + label + '.json', JSON.stringify( object ) );
 	} )
-} )
-}
-
-pull_data().then( function (schema) {
-	Object.keys( schema ).forEach( function (otype) {
-		schema[otype].then( function (thing) { console.log( thing ) } );
-	} );
-} );
+} ) } );
