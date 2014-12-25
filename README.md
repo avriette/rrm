@@ -24,7 +24,7 @@ For various reasons, I chose Riak to put this on top of. No more need for
 SQL, native storage of JSON, and it seemed like a win.
 
 Rather than use the rather ponderous and somewhat inscrutable [riak-js](http://riakjs.com/),
-I wrote a very tiny library, [riak-dc](https://github.com/avriette/riak-dc), which is
+I wrote a very tiny library, [riak-dc](https://github.com/janearc/riak-dc), which is
 the barest of wrappers around node's own [http](http://nodejs.org/api/http.html).
 
 Accordingly, you will find that this library is very tiny, takes up very
@@ -201,4 +201,4 @@ those things are added, it should be transparent.
 Author
 ====
 
-[@avriette](https://github.com/avriette), jane@cpan.org
+[@janearc](https://github.com/janearc), jane@cpan.org

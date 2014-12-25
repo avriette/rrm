@@ -1,6 +1,6 @@
 {
   "name": "rrm",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A non-relational \"ORM\" that sits atop Riak.",
   "main": "lib/rrm.js",
   "directories": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/avriette/rrm.git"
+    "url": "https://github.com/janearc/rrm.git"
   },
   "keywords": [
     "riak",
@@ -25,10 +25,10 @@
     "model",
     "sendak"
   ],
-  "author": "Jane Avriette <jane@cpan.org> (http://github.com/avriette)",
+  "author": "Jane Arc <jane@cpan.org> (http://github.com/janearc)",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/avriette/rrm/issues"
+    "url": "https://github.com/janearc/rrm/issues"
   },
   "dependencies": {
     "riak-dc" : "*",
@@ -43,5 +43,5 @@
     "sendak-usage": ">=0.0.6",
     "moment": ">=2.0.0"
   },
-  "homepage": "https://github.com/avriette/rrm"
+  "homepage": "https://github.com/janearc/rrm"
 }
