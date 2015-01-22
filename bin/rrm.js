@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+'use strict';
+
+var logger  = require( 'log4js' ).getLogger()
+	, logwrap = {
+		debug : function (s) { if (process.env.DEBUG != undefined) { logger.debug(s) } },
+		info  : function (s) { if (process.env.DEBUG != undefined) { logger.info(s) } },
+		warn  : function (s) { if (process.env.DEBUG != undefined) { logger.warn(s) } },
+		error : function (s) { if (process.env.DEBUG != undefined) { logger.error(s) } },
+	};
+
 var parsed = require( 'sendak-usage' ).parsedown( {
 	'get-schema' : {
 		'type'        : [ Boolean ],
@@ -78,10 +88,14 @@ else if (nopt['add-object']) {
 	}
 	
 	var tuple = new Buffer(nopt['tuple'], 'base64').toString('ascii');
+	logwrap.debug( 'decoded tuple: ' + tuple );
 
 	// this should be a serial from Riak.
 	//
-	rrm.add_object( nopt['object-type'], tuple ); // .then( console.log );
+	rrm.add_object( nopt['object-type'], tuple ).then( function (s) {
+		logger.info( 'Serial returned from Riak: ' + s );
+		console.log( s );
+	} );
 }
 else if (nopt['get-objects']) {
 	if (! nopt['object-type']) {

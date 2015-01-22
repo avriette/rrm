@@ -1,6 +1,6 @@
 {
   "name": "rrm",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "A non-relational \"ORM\" that sits atop Riak.",
   "main": "lib/rrm.js",
   "directories": {
@@ -31,13 +31,13 @@
     "url": "https://github.com/janearc/rrm/issues"
   },
   "dependencies": {
-    "riak-dc" : "*",
+    "riak-dc" : ">=0.2.5",
     "mocha": "*",
     "nock": "*",
-    "jagrep": "*",
+    "log4js": "*",
+    "deep-grep": ">=0.3.5",
     "chai": "*",
     "q"   : "*",
-    "sinon"   : "*",
     "chai-as-promised": "*",
     "nopt" : "*",
     "sendak-usage": ">=0.0.6",
