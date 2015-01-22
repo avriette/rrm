@@ -34,7 +34,7 @@
     "riak-dc" : "*",
     "mocha": "*",
     "nock": "*",
-    "jagrep": "*",
+    "deep-grep": ">=0.3.5",
     "chai": "*",
     "q"   : "*",
     "sinon"   : "*",
