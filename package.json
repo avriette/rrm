@@ -31,7 +31,7 @@
     "url": "https://github.com/janearc/rrm/issues"
   },
   "dependencies": {
-    "riak-dc" : "*",
+    "riak-dc" : ">=0.2.5",
     "mocha": "*",
     "nock": "*",
     "log4js": "*",
