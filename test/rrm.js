@@ -5,8 +5,7 @@ var rrm        = require( '../lib/rrm' )
 	, q          = require( 'q' )
 	, chai       = require( 'chai' )
 	, cap        = require( 'chai-as-promised' )
-	, assert     = require( 'assert' )
-	, sinon      = require( 'sinon' );
+	, assert     = require( 'assert' );
 
 chai.use( cap );
 
