@@ -1,7 +1,6 @@
 var rrm        = require( '../lib/rrm' )
 	, mock_riak  = { }
 	, mock_store = { }
-	, jgrep      = require( 'jagrep' )
 	, crypto     = require( 'crypto' )
 	, q          = require( 'q' )
 	, chai       = require( 'chai' )
@@ -61,11 +60,7 @@ function get_keys (bucket) { // {{{
 function get_tuple (bucket, key) { // {{{
 	console.log( bucket + '/' + key );
 	var deferred = q.defer()
-		, tuple    = jgrep.sync( {
-			'function' : function (t) {
-				if (t['serial'] == key) return 1;
-			}
-		}, mock_store[bucket] );
+		, tuple    = dg.deeply( mock_store[bucket], function (t) { if (t['serial'] == key) return 1 } );
 
 	deferred.resolve( tuple );
 
