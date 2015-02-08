@@ -39,7 +39,6 @@
     "chai": "*",
     "q"   : "*",
     "chai-as-promised": "*",
-    "nopt" : "*",
     "sendak-usage": ">=0.0.6",
     "moment": ">=2.0.0"
   },
