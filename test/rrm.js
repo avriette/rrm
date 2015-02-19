@@ -147,11 +147,13 @@ it( 'rrm object_types', function () {
 // new_object( type ) {{{
 //
 
-it( 'rmm new_object', function () {
-	assert( rrm.new_object( 'Automobile' ), 'object returned' );
-	assert.deepEqual( rrm.new_object( 'Automobile' ), { 'name': '' }, 'correctly-formed object' );
-	assert( rrm.new_object( 'Manufacturer' ), 'object returned' );
-	assert.deepEqual( rrm.new_object( 'Manufacturer' ), { 'name': '' }, 'correctly-formed object' );
+it( 'rrm new_object', function () {
+	rrm.new_object( 'Automobile' ).then( function (a) {
+		assert.deepEqual( a, { 'name': '' }, 'correctly-formed object' );
+	} );
+	rrm.new_object( 'Manufacturer' ).then( function (m) {
+		assert.deepEqual( m, { 'name': '' }, 'correctly-formed object' );
+	} );
 } );
 
 // }}}
