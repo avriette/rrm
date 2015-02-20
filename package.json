@@ -1,6 +1,6 @@
 {
   "name": "rrm",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A non-relational \"ORM\" that sits atop Riak.",
   "main": "lib/rrm.js",
   "directories": {
@@ -35,7 +35,7 @@
     "mocha": "*",
     "nock": "*",
     "log4js": "*",
-    "deep-grep": ">=0.3.5",
+    "deep-grep": ">=0.4.0",
     "chai": "*",
     "q"   : "*",
     "chai-as-promised": "*",
