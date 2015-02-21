@@ -5,7 +5,8 @@ var rrm        = require( '../lib/rrm' )
 	, q          = require( 'q' )
 	, chai       = require( 'chai' )
 	, cap        = require( 'chai-as-promised' )
-	, assert     = require( 'assert' );
+	, assert     = require( 'assert' )
+	, dg         = require( 'deep-grep' )
 
 chai.use( cap );
 
@@ -57,7 +58,7 @@ function get_keys (bucket) { // {{{
 } // }}} get_keys
 
 function get_tuple (bucket, key) { // {{{
-	console.log( bucket + '/' + key );
+	//console.trace( require('util').inspect( mock_store ) );
 	var deferred = q.defer()
 		, tuple    = dg.deeply( mock_store[bucket], function (t) { if (t['serial'] == key) return 1 } );
 
@@ -69,8 +70,9 @@ function get_tuple (bucket, key) { // {{{
 function del_tuple (bucket, key) { // {{{
 	var deferred = q.defer();
 
-	Schema = jgrep.sync( { 'function' : function (t) { if (t['serial'] != key) { return 1 } } }, Schema[bucket] )
+	Schema = dg.deeply( Schema[bucket], function (t) { if (t['serial'] != key) { return 1 } } );
 
+	deferred.resolve( Schema );
 	return deferred.promise;
 } // }}} del_tuple
 
@@ -136,7 +138,8 @@ it( 'rrm set_schema', function () {
 //
 
 it( 'rrm object_types', function () {
-	return rrm.object_types().then( function (types) {
+	return rrm.get_object_types().then( function (types) {
+		console.log( 'types: '.types );
 		types.forEach( function (t) { assert( typeof t == 'string', 'list of strings returned' ) } );
 		assert.deepEqual( types, [ 'Automobile', 'Manufacturer' ], 'list of types correct' );
 	} );
