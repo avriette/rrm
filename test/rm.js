@@ -1,4 +1,4 @@
-var rrm        = require( '../lib/rrm' )
+var rm        = require( '../lib/rm' )
 	, mock_riak  = { }
 	, mock_store = { }
 	, crypto     = require( 'crypto' )
@@ -111,9 +111,9 @@ it( 'test schema passes syntax/interpeter check', function () { assert( Schema )
 // set_riak_handle( handle ) {{{
 //
 
-it( 'rrm set_riak_handle', function () {
+it( 'rm set_riak_handle', function () {
 	assert.deepEqual(
-		rrm.set_riak_handle( mock_riak ),
+		rm.set_riak_handle( mock_riak ),
 		mock_riak,
 		'mock object returned'
 	)
@@ -124,9 +124,9 @@ it( 'rrm set_riak_handle', function () {
 // set_schema( schema ) {{{
 //
 
-it( 'rrm set_schema', function () {
+it( 'rm set_schema', function () {
 	assert.deepEqual(
-		rrm.set_schema( Schema ),
+		rm.set_schema( Schema ),
 		Schema,
 		'mock schema returned'
 	)
@@ -137,8 +137,8 @@ it( 'rrm set_schema', function () {
 // object_types( ) {{{
 //
 
-it( 'rrm object_types', function () {
-	return rrm.get_object_types().then( function (types) {
+it( 'rm object_types', function () {
+	return rm.get_object_types().then( function (types) {
 		console.log( 'types: '.types );
 		types.forEach( function (t) { assert( typeof t == 'string', 'list of strings returned' ) } );
 		assert.deepEqual( types, [ 'Automobile', 'Manufacturer' ], 'list of types correct' );
@@ -150,11 +150,11 @@ it( 'rrm object_types', function () {
 // new_object( type ) {{{
 //
 
-it( 'rrm new_object', function () {
-	rrm.new_object( 'Automobile' ).then( function (a) {
+it( 'rm new_object', function () {
+	rm.new_object( 'Automobile' ).then( function (a) {
 		assert.deepEqual( a, { 'name': '' }, 'correctly-formed object' );
 	} );
-	rrm.new_object( 'Manufacturer' ).then( function (m) {
+	rm.new_object( 'Manufacturer' ).then( function (m) {
 		assert.deepEqual( m, { 'name': '' }, 'correctly-formed object' );
 	} );
 } );
@@ -164,8 +164,8 @@ it( 'rrm new_object', function () {
 // get_schema( ) {{{
 //
 
-it( 'rrm get_schema', function () {
-	return rrm.get_schema().then( function (s) {
+it( 'rm get_schema', function () {
+	return rm.get_schema().then( function (s) {
 		assert( s, 'schema returned' );
 		assert.deepEqual( s, Schema, 'schema is correct' );
 	} );
@@ -175,10 +175,10 @@ it( 'rrm get_schema', function () {
 
 // add_object( type, object ) {{{
 //
-it( 'rrm add_object', function () {
-	var auto = rrm.new_object( 'Automobile' );
+it( 'rm add_object', function () {
+	var auto = rm.new_object( 'Automobile' );
 	auto['name'] = 'Ford Edsel';
-	return rrm.add_object( 'Automobile', auto ).then( function (serial) {
+	return rm.add_object( 'Automobile', auto ).then( function (serial) {
 		// We can't really inspect this further.
 		//
 		assert( serial, 'serial returned' );
@@ -190,12 +190,12 @@ it( 'rrm add_object', function () {
 // get_objects( type ) {{{
 //
 
-it( 'rrm get_objects', function () {
-	var auto = rrm.new_object( 'Automobile' );
+it( 'rm get_objects', function () {
+	var auto = rm.new_object( 'Automobile' );
 	auto['name'] = 'Pontiac Aztek';
-	rrm.add_object( 'Automobile', auto ).then( function (serial) {
-		return rrm.object_types().then( function (types) { types.forEach( function (type) {
-			return rrm.get_objects( type ).then( function (objects) {
+	rm.add_object( 'Automobile', auto ).then( function (serial) {
+		return rm.object_types().then( function (types) { types.forEach( function (type) {
+			return rm.get_objects( type ).then( function (objects) {
 				objects.forEach( function (object) {
 					assert( object, 'object defined' );
 				} )
@@ -208,11 +208,11 @@ it( 'rrm get_objects', function () {
 
 // del_object( type, object ) {{{
 //
-it( 'rrm del_object', function () {
-	var auto = rrm.new_object( 'Automobile' );
+it( 'rm del_object', function () {
+	var auto = rm.new_object( 'Automobile' );
 	auto['name'] = 'Toyota Previa';
-	rrm.add_object( 'Automobile', auto ).then( function (serial) {
-		return rrm.del_object( 'Automobile', serial ).then( function () {
+	rm.add_object( 'Automobile', auto ).then( function (serial) {
+		return rm.del_object( 'Automobile', serial ).then( function () {
 			assert( 0, 'return from del_object is not good.' );
 		} )
 	} )
