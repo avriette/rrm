@@ -13,7 +13,7 @@ var logger  = require( 'log4js' ).getLogger()
 var parsed = require( 'sendak-usage' ).parsedown( {
 	'get-schema' : {
 		'type'        : [ Boolean ],
-		'description' : 'Return the full RRM schema in Riak',
+		'description' : 'Return the full RM schema in Riak',
 	},
 	'object-types' : {
 		'type'        : [ Boolean ],
@@ -31,7 +31,7 @@ var parsed = require( 'sendak-usage' ).parsedown( {
 
 	'add-object' : {
 		'type'        : [ Boolean ],
-		'description' : 'Attempts to place an object in rrm',
+		'description' : 'Attempts to place an object in RM',
 	},
 	'object-type' : {
 		'type'        : [ String ],
@@ -58,9 +58,9 @@ if (nopt['help']) {
 	process.exit(0); // success
 }
 
-var rrm  = require( 'rrm' );
+var rm  = require( 'rm' );
 
-rrm.ping().then( function (r) { if (!r) {
+rm.ping().then( function (r) { if (!r) {
 	console.log( 'Connection seems to be down.' );
 	process.exit( -255 );
 } } );
@@ -68,17 +68,17 @@ rrm.ping().then( function (r) { if (!r) {
 if (nopt['get-schema']) {
 	// Display the schema for the user. This is kind of messy.
 	//
-	rrm.get_schema().then( console.log );
+	rm.get_schema().then( console.log );
 }
 else if (nopt['object-types']) {
 	// Display the schema for the user. This is kind of messy.
 	//
-	rrm.object_types().then( console.log );
+	rm.object_types().then( console.log );
 }
 else if (nopt['describe-object']) {
 	// Describe what we know about an object's prototype
 	//
-	rrm.new_object( nopt['describe-object'] ).then( console.log );
+	rm.new_object( nopt['describe-object'] ).then( console.log );
 }
 else if (nopt['add-object']) {
 	if ((! nopt['tuple'] ) || (! nopt['object-type'])) {
@@ -92,7 +92,7 @@ else if (nopt['add-object']) {
 
 	// this should be a serial from Riak.
 	//
-	rrm.add_object( nopt['object-type'], tuple ).then( function (s) {
+	rm.add_object( nopt['object-type'], tuple ).then( function (s) {
 		logger.info( 'Serial returned from Riak: ' + s );
 		console.log( s );
 	} );
@@ -103,5 +103,5 @@ else if (nopt['get-objects']) {
 		console.log( usage );
 		process.exit( -255 ); // oops
 	}
-	rrm.get_objects( nopt['object-type'] ).then( console.log );
+	rm.get_objects( nopt['object-type'] ).then( console.log );
 }
