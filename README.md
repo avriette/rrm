@@ -1,4 +1,4 @@
-RRM, an ORM\* for Riak
+RM, an ORM\* for Riak
 ====
 
 So in the course of building [Sendak](https://github.com/18F/Sendak) for
@@ -37,21 +37,21 @@ meets the above requirements:
 * Exceedingly simple API
 * No pyramid of fail
 
-\* note: RRM is not actually "relational."
+\* note: RM is not actually "relational."
 
-How to use RRM
+How to use RM
 ====
 
-Basically, `npm install rrm` should do the trick and install dependencies.
+Basically, `npm install rm` should do the trick and install dependencies.
 Unit tests are mocked, but you will need a Riak somewhere to talk to. `riak-dc`
-assumes that you are using `http://localhost:8098/riak`, and if you are, RRM
+assumes that you are using `http://localhost:8098/riak`, and if you are, RM
 requires no configuration. If not, be sure to initialise `riak-dc` before
-using RRM.
+using RM.
 
 #### Key concepts:
 
-RRM stores a 'schema' in Riak, from which it derives prototypes of each of the
-object types stored in the RRM. The schema is not actually "bound" to
+RM stores a 'schema' in Riak, from which it derives prototypes of each of the
+object types stored in the RM. The schema is not actually "bound" to
 anything, as such, and serves only as a template from which to build new
 objects.
 
@@ -62,7 +62,7 @@ Objects are "anonymous" until they are stored in Riak, which gives them a
 unique serial (for SQL people, you might call this a 'primary key').
 
 Objects also contain no metadata about what they are. So you must keep track
-of which type of object you have. RRM is flexible enough that if you wanted to
+of which type of object you have. RM is flexible enough that if you wanted to
 incorporate a `typeof` attribute, you could do this, but you would have to
 keep track of that yourself.
 
@@ -115,7 +115,7 @@ Takes no arguments and returns a list of object types defined in the schema.
 
 * `update_object( type, object )`
 
-Provided a type and object, RRM will attempt to find the object in Riak,
+Provided a type and object, RM will attempt to find the object in Riak,
 *delete* that object, and re-insert, providing you with a new copy of your
 object with appropriate serial. Note that deleted objects are
 [tricky](http://docs.basho.com/riak/latest/ops/advanced/deletion/#Tombstones)
@@ -124,14 +124,14 @@ in Riak, so be sparing about the this operation (delete & insert).
 #### The basic design pattern
 
 ```
-var rrm     = require( 'rrm' )
-	, types   = rrm.object_types()
-	, schema  = rrm.get_schema()
-	, banana  = rrm.new_object( 'fruit' );
+var rm     = require( 'rm' )
+	, types   = rm.object_types()
+	, schema  = rm.get_schema()
+	, banana  = rm.new_object( 'fruit' );
 
 banana['color'] = 'green';
 
-var pbanana = rrm.add_object( banana ).then( function (b) {
+var pbanana = rm.add_object( banana ).then( function (b) {
 	// 'pbanana' infers 'promise to a banana'
 	//
 	// the banana object now has a serial and can be referenced in Riak.
@@ -141,7 +141,7 @@ var pbanana = rrm.add_object( banana ).then( function (b) {
 
 	banana['color'] = 'yellow';
 
-	var promise = rrm.update_object( 'fruit', banana );
+	var promise = rm.update_object( 'fruit', banana );
 
 	promise.then( function (b) {
 		// What will you do with your now-yellow banana?
@@ -153,7 +153,7 @@ var pbanana = rrm.add_object( banana ).then( function (b) {
 		// This will not return anything meaningful, although an error will be
 		// returned if the serial for this banana is not found.
 		//
-		rrm.del_object( 'fruit', banana ).then( function (e) {
+		rm.del_object( 'fruit', banana ).then( function (e) {
 			if (typeof e == 'error') {
 				console.log( e )
 			}
@@ -166,9 +166,9 @@ var pbanana = rrm.add_object( banana ).then( function (b) {
 What's in the box
 ====
 
-There are two tools in the `bin` directory, `rrm.js` and `backupdb.js`.
+There are two tools in the `bin` directory, `rm.js` and `backupdb.js`.
 
-* `rrm.js` is a simple command-line tool to interface with the rrm. For
+* `rm.js` is a simple command-line tool to interface with RM. For
 example, `--get-schema` will return the schema as it appears in Riak, and you
 can use `--add-object --bucket bucketname --tuple base_64_encoded_object` to
 add elements to the database. And so on.
@@ -188,7 +188,7 @@ Future plans
 
 If you look over the schema in `examples/`, you will notice I have left a
 couple fields reserved, and have stubs for relational properties. At some
-point RRM may actually be relational, but it serves my purpose for now.
+point RM may actually be relational, but it serves my purpose for now.
 Additionally, Riak supports Javascript, so it should be possible to add
 constraints to columns (that is, attributes of objects) such as "only allow
 this to be a url" and similar.
