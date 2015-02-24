@@ -1,8 +1,8 @@
 {
-  "name": "rrm",
+  "name": "rm",
+  "description": "An object storage layer for Riak",
   "version": "0.1.4",
-  "description": "A non-relational \"ORM\" that sits atop Riak.",
-  "main": "lib/rrm.js",
+  "main": "lib/rm.js",
   "directories": {
     "test": "test"
   },
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/janearc/rrm.git"
+    "url": "https://github.com/janearc/rm.git"
   },
   "keywords": [
     "riak",
@@ -28,7 +28,7 @@
   "author": "Jane Arc <jane@cpan.org> (http://github.com/janearc)",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/janearc/rrm/issues"
+    "url": "https://github.com/janearc/rm/issues"
   },
   "dependencies": {
     "riak-dc" : ">=0.3.0",
@@ -42,5 +42,5 @@
     "sendak-usage": ">=0.0.6",
     "moment": ">=2.0.0"
   },
-  "homepage": "https://github.com/janearc/rrm"
+  "homepage": "https://github.com/janearc/rm"
 }
