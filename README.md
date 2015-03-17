@@ -183,6 +183,10 @@ database on the disk somewhere." It can print to stdout for unixy pipey kinds
 of things, take a filename, or an s3 bucket (you will need credentials for
 this, obviously).
 
+If you need to effectively "truncate" the database, there's a tool in the
+[riak-dc package](https://github.com/janearc/riak-dc/blob/master/bin/init-riak.js)
+that will remove everything from the Riak ring. Careful with that axe, Eugene.
+
 Future plans
 ====
 
