@@ -56,7 +56,7 @@ anything, as such, and serves only as a template from which to build new
 objects.
 
 These objects are stored in a Riak bucket according to their prototype (so all
-the 'automobile' objects are stored in `riak/automobile/{serial}`.
+the 'automobile' objects are stored in `riak/automobile/{serial}`).
 
 Objects are "anonymous" until they are stored in Riak, which gives them a
 unique serial (for SQL people, you might call this a 'primary key').
