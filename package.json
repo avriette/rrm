@@ -1,7 +1,7 @@
 {
   "name": "rm",
   "description": "An object storage layer for Riak",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "lib/rm.js",
   "directories": {
     "test": "test"
@@ -31,7 +31,7 @@
     "url": "https://github.com/janearc/rm/issues"
   },
   "dependencies": {
-    "riak-dc" : ">=0.3.0",
+    "riak-dc" : ">=0.3.1",
     "mocha": "*",
     "nock": "*",
     "log4js": "*",
