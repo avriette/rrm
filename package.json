@@ -1,7 +1,7 @@
 {
   "name": "rm",
   "description": "An object storage layer for Riak",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "main": "lib/rm.js",
   "directories": {
     "test": "test"
